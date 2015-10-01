@@ -9,10 +9,6 @@ import (
 
 const ParseError string = "Couldn't parse requested operation"
 
-func useFmt() {
-	fmt.Println("argh")
-}
-
 func DoSomeMath(w http.ResponseWriter, r *http.Request) {
 	// TODO: handle null URL
 
