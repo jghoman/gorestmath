@@ -3,6 +3,7 @@ package gorestmath
 import (
 	"fmt"
 	"net/http"
+	"strconv"
 	"strings"
 )
 
@@ -22,7 +23,43 @@ func DoSomeMath(w http.ResponseWriter, r *http.Request) {
 		returnError(ParseError, w)
 		return
 	}
-	w.Write([]byte(`hi`))
+	var op func(int, int) int
+
+	firstNum, err := strconv.Atoi(pathArray[2])
+	if err != nil {
+		returnError("Can't parse first digit", w)
+		return
+	}
+
+	secondNum, err := strconv.Atoi(pathArray[3])
+	if err != nil {
+		returnError("Can't parse second digit", w)
+		return
+	}
+
+	switch pathArray[1] {
+	case "add":
+		op = func(a, b int) int { return a + b }
+	case "sub":
+		op = func(a, b int) int { return a - b }
+	case "multiply":
+		op = func(a, b int) int { return a * b }
+	case "divide":
+		if secondNum == 0 {
+			returnError("Can't divide by 0", w)
+			return
+		}
+		op = func(a, b int) int { return a / b }
+	default:
+		returnError("Bad op specified", w)
+		return
+	}
+
+	result := op(firstNum, secondNum)
+
+	resultJson := fmt.Sprintf("{'result':'%v'}", result)
+
+	w.Write([]byte(resultJson))
 }
 
 func returnError(content string, w http.ResponseWriter) {

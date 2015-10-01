@@ -29,7 +29,7 @@ func (mrw *MockResponseWriter) WriteHeader(header int) {
 
 func assertByteArrayEquals(expected []byte, actual []byte, t *testing.T) {
 	if bytes.Compare(expected, actual) != 0 {
-		t.Errorf("Nope!")
+		t.Errorf("Expected %v but got %v. Failing", expected, actual)
 	}
 }
 
@@ -63,7 +63,7 @@ func TestAdding1and2(t *testing.T) {
 	request := &http.Request{URL: url}
 	DoSomeMath(mrw, request)
 
-	assertByteArrayEquals([]byte(`hi`), mrw.writtenBytes, t)
+	assertByteArrayEquals([]byte(`{'result':'3'}`), mrw.writtenBytes, t)
 }
 
 func TestBadPath(t *testing.T) {
