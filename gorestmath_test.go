@@ -54,17 +54,25 @@ func getUrl(s string, t *testing.T) *url.URL {
 	return url
 }
 
-func TestAdding1and2(t *testing.T) {
+func checkTheMath(op string, a, b, result int, t *testing.T) {
 	t.Parallel()
 	mrw := &MockResponseWriter{}
 
-	url := getUrl("http://www.hello.com/add/1/2", t)
+	url := getUrl(fmt.Sprintf("http://www.hello.com/%v/%v/%v", op, a, b), t)
 
 	request := &http.Request{URL: url}
 	DoSomeMath(mrw, request)
 
-	assertByteArrayEquals([]byte(`{'result':'3'}`), mrw.writtenBytes, t)
+	assertByteArrayEquals([]byte(fmt.Sprintf("{'result':'%v'}", result)), mrw.writtenBytes, t)
 }
+
+func TestAdd1and2(t *testing.T) { checkTheMath("add", 1, 2, 1+2, t) }
+
+func TestSub92and22(t *testing.T) { checkTheMath("subtract", 92, 22, 92-22, t) }
+
+func TestMult231and522(t *testing.T) { checkTheMath("multiply", 231, 522, 231*522, t) }
+
+func TestDiv1492and3(t *testing.T) { checkTheMath("divide", 1492, 3, 1492/3, t) }
 
 func TestBadPath(t *testing.T) {
 	t.Parallel()

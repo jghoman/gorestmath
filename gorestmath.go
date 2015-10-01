@@ -40,7 +40,7 @@ func DoSomeMath(w http.ResponseWriter, r *http.Request) {
 	switch pathArray[1] {
 	case "add":
 		op = func(a, b int) int { return a + b }
-	case "sub":
+	case "subtract":
 		op = func(a, b int) int { return a - b }
 	case "multiply":
 		op = func(a, b int) int { return a * b }
